@@ -332,6 +332,8 @@ start:
     int zufall1 = 0;
     int zufall2 = 0;
 
+    int cntWrong = 0;                                   //counter for wrong pushed buttons
+
     delay(200); //that vibration does not start early
 
     if (digitalRead(button_select) == HIGH)             //checks if select button is pressed
@@ -412,6 +414,9 @@ start:
             digitalWrite(zufall1, LOW);
             state = 1;
           }
+          else {
+            cntWrong++;
+          }
         }
         //stop timer
         if (i == 9 && state == 1)
@@ -447,6 +452,13 @@ start:
               lcd.print(nachkommastelle);
             }
 
+            lcd.setCursor(0, 3);
+            lcd.print("you pushed the right button  ");
+            lcd.setCursor(0, 4);
+            lcd.print(9 - cntWrong);
+            lcd.setCursor(1, 4);
+            lcd.print(" times. CONGRATULATIONS!")
+            
             //checks if those buttons are pressed
             digitalRead(button_res);
             digitalRead(button_mode1);
