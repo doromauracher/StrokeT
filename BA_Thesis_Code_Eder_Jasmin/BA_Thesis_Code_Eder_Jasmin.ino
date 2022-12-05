@@ -369,53 +369,100 @@ start:
             goto start;
             state = 1;
           }
-          //functions that turn off the randomly turned on vibration motor
-          if (digitalRead(vibration1) == HIGH && digitalRead(button1) == HIGH)
-          { //display
-            lcd.setCursor(0, 0);
-            lcd.print("timer has been  ");
-            lcd.setCursor(0, 1);
-            lcd.print("started         ");
-            //turns off vibration motor
-            digitalWrite(zufall1, LOW);
-            state = 1;
-          }
 
-          else if (digitalRead(vibration2) == HIGH && digitalRead(button2) == HIGH)
-          { //display
-            lcd.setCursor(0, 0);
-            lcd.print("timer has been  ");
-            lcd.setCursor(0, 1);
-            lcd.print("started         ");
-            //turns off vibration motor
-            digitalWrite(zufall1, LOW);
-            state = 1;
-          }
+// switch case? und dann if
+          
+//          //functions that turn off the randomly turned on vibration motor
+//          if (digitalRead(vibration1) == HIGH && digitalRead(button1) == HIGH)
+//          { //display
+//            lcd.setCursor(0, 0);
+//            lcd.print("timer has been  ");
+//            lcd.setCursor(0, 1);
+//            lcd.print("started         ");
+//            //turns off vibration motor
+//            digitalWrite(zufall1, LOW);
+//            state = 1;
+//          }
+//
+//          else if (digitalRead(vibration2) == HIGH && digitalRead(button2) == HIGH)
+//          { //display
+//            lcd.setCursor(0, 0);
+//            lcd.print("timer has been  ");
+//            lcd.setCursor(0, 1);
+//            lcd.print("started         ");
+//            //turns off vibration motor
+//            digitalWrite(zufall1, LOW);
+//            state = 1;
+//          }
+//
+//          else if (digitalRead(vibration3) == HIGH && digitalRead(button3) == HIGH)
+//          {
+//            //display
+//            lcd.setCursor(0, 0);
+//            lcd.print("timer has been  ");
+//            lcd.setCursor(0, 1);
+//            lcd.print("started         ");
+//            //turns off vibration motor
+//            digitalWrite(zufall1, LOW);
+//            state = 1;
+//          }
+//
+//          else if (digitalRead(vibration4) == HIGH && digitalRead(button4) == HIGH)
+//          { //display
+//            lcd.setCursor(0, 0);
+//            lcd.print("timer has been  ");
+//            lcd.setCursor(0, 1);
+//            lcd.print("started         ");
+//            //turns off vibration motor
+//            digitalWrite(zufall1, LOW);
+//            state = 1;
+//          }
 
-          else if (digitalRead(vibration3) == HIGH && digitalRead(button3) == HIGH)
-          {
-            //display
-            lcd.setCursor(0, 0);
-            lcd.print("timer has been  ");
-            lcd.setCursor(0, 1);
-            lcd.print("started         ");
-            //turns off vibration motor
-            digitalWrite(zufall1, LOW);
-            state = 1;
-          }
-
-          else if (digitalRead(vibration4) == HIGH && digitalRead(button4) == HIGH)
-          { //display
-            lcd.setCursor(0, 0);
-            lcd.print("timer has been  ");
-            lcd.setCursor(0, 1);
-            lcd.print("started         ");
-            //turns off vibration motor
-            digitalWrite(zufall1, LOW);
-            state = 1;
-          }
-          else {
-            cntWrong++;
+          switch (zufall1) {
+            case 30: // vibration1
+              if (digitalRead(button1) == HIGH){
+                displayTimerStarted();
+                //turns off vibration motor
+                digitalWrite(zufall1, LOW);
+                state = 1;
+              }
+              else if (digitalRead(button2) == HIGH || digitalRead(button3) == HIGH || digitalRead(button4) == HIGH){
+                cntWrong ++;
+              }
+              break;
+            case 31:
+              if (digitalRead(button2) == HIGH){
+                displayTimerStarted();
+                //turns off vibration motor
+                digitalWrite(zufall1, LOW);
+                state = 1;
+              }
+              else if (digitalRead(button1) == HIGH || digitalRead(button3) == HIGH || digitalRead(button4) == HIGH){
+                cntWrong ++;
+              }
+              break;
+            case 32:
+              if (digitalRead(button4) == HIGH){
+                displayTimerStarted();
+                //turns off vibration motor
+                digitalWrite(zufall1, LOW);
+                state = 1;
+              }
+              else if (digitalRead(button1) == HIGH || digitalRead(button2) == HIGH || digitalRead(button3) == HIGH){
+                cntWrong ++;
+              }
+              break;
+            case 33:
+              if (digitalRead(button3) == HIGH){
+                displayTimerStarted();
+                //turns off vibration motor
+                digitalWrite(zufall1, LOW);
+                state = 1;
+              }
+              else if (digitalRead(button1) == HIGH || digitalRead(button2) == HIGH || digitalRead(button4) == HIGH){
+                cntWrong ++;
+              }
+              break;
           }
         }
         //stop timer
@@ -430,34 +477,30 @@ start:
           while ((digitalRead(button_res) || digitalRead(button_mode1) || digitalRead(button_select)) == LOW)
           { //display
             lcd.setCursor(0, 0);
-            lcd.print("you needed      ");
-            lcd.setCursor(0, 1);
             lcd.print(s);
-            lcd.setCursor(4, 1);
+            lcd.setCursor(4, 0);
             lcd.print("  seconds");
+            lcd.setCursor(0, 1);
+            lcd.print(cntWrong);
+            lcd.setCursor(2, 1);
+            String outputString = "  wrong pushed button";
+            lcd.print(outputString + (cntWrong == 1 ? "" : "s"));
 
             //condition to display the decimale place of the number
             if (s >= 10 )
             {
-              lcd.setCursor(2, 1);
+              lcd.setCursor(2, 0);
               lcd.print(",");
               lcd.setCursor(3, 1);
               lcd.print(nachkommastelle);
             }
             else
             {
-              lcd.setCursor(1, 1);
+              lcd.setCursor(1, 0);
               lcd.print(",");
-              lcd.setCursor(2, 1);
+              lcd.setCursor(2, 0);
               lcd.print(nachkommastelle);
             }
-
-            lcd.setCursor(0, 3);
-            lcd.print("you pushed the right button  ");
-            lcd.setCursor(0, 4);
-            lcd.print(9 - cntWrong);
-            lcd.setCursor(1, 4);
-            lcd.print(" times. CONGRATULATIONS!")
             
             //checks if those buttons are pressed
             digitalRead(button_res);
@@ -612,6 +655,13 @@ void action4()
   digitalRead(button_mode1);       //reads mode button status (high or low)
 }
 
+void displayTimerStarted() {
+  // display
+  lcd.setCursor(0, 0);
+  lcd.print("timer has been  ");
+  lcd.setCursor(0, 1);
+  lcd.print("started         ");
+}
 
 void calculation()
 {
