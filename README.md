@@ -14,3 +14,4 @@ analog read of poti and write it to servo motor
 # TO DOs
 * mode3: calculate maximal force to save it on sd card
 * timestamp - for each file of saved data
+* mode4: detect wrong pushed buttons
