@@ -418,53 +418,60 @@ start:
 //            state = 1;
 //          }
 
-          switch (zufall1) {
-            case 30: // vibration1
-              if (digitalRead(button1) == HIGH){
-                displayTimerStarted();
-                //turns off vibration motor
-                digitalWrite(zufall1, LOW);
-                state = 1;
+          if(digitalRead(vibration1) == HIGH){
+            if (digitalRead(button1) == HIGH){
+              displayTimerStarted();
+              //turns off vibration motor
+              digitalWrite(zufall1, LOW);
+              state = 1;
               }
-              else if (digitalRead(button2) == HIGH || digitalRead(button3) == HIGH || digitalRead(button4) == HIGH){
-                cntWrong ++;
-              }
-              break;
-            case 31:
-              if (digitalRead(button2) == HIGH){
-                displayTimerStarted();
-                //turns off vibration motor
-                digitalWrite(zufall1, LOW);
-                state = 1;
-              }
-              else if (digitalRead(button1) == HIGH || digitalRead(button3) == HIGH || digitalRead(button4) == HIGH){
-                cntWrong ++;
-              }
-              break;
-            case 32:
-              if (digitalRead(button4) == HIGH){
-                displayTimerStarted();
-                //turns off vibration motor
-                digitalWrite(zufall1, LOW);
-                state = 1;
-              }
-              else if (digitalRead(button1) == HIGH || digitalRead(button2) == HIGH || digitalRead(button3) == HIGH){
-                cntWrong ++;
-              }
-              break;
-            case 33:
-              if (digitalRead(button3) == HIGH){
-                displayTimerStarted();
-                //turns off vibration motor
-                digitalWrite(zufall1, LOW);
-                state = 1;
-              }
-              else if (digitalRead(button1) == HIGH || digitalRead(button2) == HIGH || digitalRead(button4) == HIGH){
-                cntWrong ++;
-              }
-              break;
+            else if (digitalRead(button2) == HIGH || digitalRead(button3) == HIGH || digitalRead(button4) == HIGH){
+              cntWrong++;
+              digitalWrite(zufall1, LOW);
+              state = 1;
+            }
           }
-        }
+          else if(digitalRead(vibration2) == HIGH){
+            if (digitalRead(button2) == HIGH){
+              displayTimerStarted();
+              //turns off vibration motor
+              digitalWrite(zufall1, LOW);
+              state = 1;
+              }
+            else if (digitalRead(button1) == HIGH || digitalRead(button3) == HIGH || digitalRead(button4) == HIGH){
+              cntWrong++;
+              digitalWrite(zufall1, LOW);
+              state = 1;
+            }
+          }
+          else if(digitalRead(vibration3) == HIGH){
+            if (digitalRead(button3) == HIGH){
+              displayTimerStarted();
+              //turns off vibration motor
+              digitalWrite(zufall1, LOW);
+              state = 1;
+              }
+            else if (digitalRead(button1) == HIGH || digitalRead(button2) == HIGH || digitalRead(button4) == HIGH){
+              cntWrong++;
+              digitalWrite(zufall1, LOW);
+              state = 1;
+            }
+          }
+          else if(digitalRead(vibration4) == HIGH){
+            if (digitalRead(button4) == HIGH){
+              displayTimerStarted();
+              //turns off vibration motor
+              digitalWrite(zufall1, LOW);
+              state = 1;
+              }
+            else if (digitalRead(button1) == HIGH || digitalRead(button2) == HIGH || digitalRead(button3) == HIGH){
+              cntWrong++;
+              digitalWrite(zufall1, LOW);
+              state = 1;
+            }
+          }
+
+        
         //stop timer
         if (i == 9 && state == 1)
         { lcd.setCursor(0, 1);
