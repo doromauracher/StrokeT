@@ -59,18 +59,18 @@ void loop() {
   
   switch (chooseMode) {
     case 1:
-      writeFile(mode1);
+      writeFile4Fingers(mode1);
       break;
     case 2:
-      writeFile(mode2);
+      writeFileTime(mode2);
       break;
     case 3:
-      writeFile(mode3);
+      writeFile4Fingers(mode3);
       break;
   }
 }
 
-void writeFile(char filename[]) {
+void writeFile4Fingers(char filename[]) {
   // open the file
   // if file does not exist - create one
   myFile = SD.open(filename, FILE_WRITE);
@@ -82,6 +82,21 @@ void writeFile(char filename[]) {
     myFile.print("finger3: ");
     myFile.print(",");
     myFile.println("finger4: ");
+    myFile.close();
+  }
+  else {
+    // if the file didn't open, print an error:
+    Serial.print("error opening ");
+    Serial.println(filename);
+  }
+}
+
+void writeFileTime(char filename[]) {
+  // open the file
+  // if file does not exist - create one
+  myFile = SD.open(filename, FILE_WRITE);
+  if(myFile) {
+    myFile.print("total time: ");
     myFile.close();
   }
   else {
