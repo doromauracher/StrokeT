@@ -17,6 +17,7 @@ int button1 = 22;
 int button2 = 23;
 int button3 = 24;
 int button4 = 25;
+
 int button_res = 26;
 int button_select = 27;
 int button_mode1 = 28;
@@ -82,7 +83,9 @@ int force4;
 
 //run once
 void setup()
-{ //initialization of variables as outputs
+{ 
+  Serial.begin(9600);
+  //initialization of variables as outputs
   //  pinMode(redLED, OUTPUT);
   //  pinMode(blueLED, OUTPUT);
   //  pinMode(greenLED, OUTPUT);
@@ -101,10 +104,10 @@ void setup()
   pinMode(FSR2, INPUT);
   pinMode(FSR3, INPUT);
   pinMode(FSR4, INPUT);
-  pinMode(button1, INPUT);
-  pinMode(button2, INPUT);
-  pinMode(button3, INPUT);
-  pinMode(button4, INPUT);
+//  pinMode(button1, INPUT);
+//  pinMode(button2, INPUT);
+//  pinMode(button3, INPUT);
+//  pinMode(button4, INPUT);
   pinMode(button_res, INPUT);
   pinMode(button_mode1, INPUT);
   pinMode(button_mode2, INPUT);
@@ -331,6 +334,16 @@ void action2()
 start:
     int zufall1 = 0;
     int zufall2 = 0;
+    int vibration = 0;
+    int state = 0;
+
+    boolean nextButton;
+    boolean prestate1 = false;                          //variables to count button pushing and save state of button
+    boolean prestate2 = false;
+    boolean prestate3 = false;
+    boolean prestate4 = false;
+
+    String buttons = "s";                               //to print button S on lcd display
 
     int cntWrong = 0;                                   //counter for wrong pushed buttons
 
@@ -346,6 +359,7 @@ start:
         }
 
         zufall2 = zufall1;
+        vibration = zufall2 - 29;
         zufall1 = random(30, 34);                       //generates random number
 
         if (zufall1 == zufall2)                         //if second random number is same as first than find a new second random number
@@ -359,7 +373,14 @@ start:
           digitalWrite(zufall1, HIGH);
         }
 
-        int state = 0;                                  //variable to left while loop
+        state = 0;                                  //variables to left while loop
+        nextButton = false;
+        
+        prestate1 = false;                      
+        prestate2 = false;
+        prestate3 = false;
+        prestate4 = false;
+        
         
         while (state == 0)
         { //condition to left while-loop when mode or select button is pressed
@@ -369,114 +390,121 @@ start:
             goto start;
             state = 1;
           }
+          //functions that turn off the randomly turned on vibration motor
+          if (digitalRead(vibration1) == HIGH)
+          { //display
+            displayTimerStarted();
+            Serial.println(starttimer);
+            if (digitalRead(button1) == HIGH) {
+              //turns off vibration motor
+              digitalWrite(zufall1, LOW);
+              nextButton = true;
+            }
+            // checks if another button is pushed and increments cntWrong 
+            else if (digitalRead(button2) == HIGH && !prestate2){
+              cntWrong ++;
+              prestate2 = true;
+            }
+            else if (digitalRead(button3) == HIGH && !prestate3){
+              cntWrong ++;
+              prestate3 = true;
+            }
+            else if (digitalRead(button4) == HIGH && !prestate4 && vibration != 4){
+              cntWrong ++;
+              prestate4 = true;
+            }
+          }
 
-// switch case? und dann if
+          if (digitalRead(vibration2) == HIGH)
+          { //display
+            displayTimerStarted();
+            Serial.println(starttimer);
+            if (digitalRead(button2) == HIGH) {
+              //turns off vibration motor
+              digitalWrite(zufall1, LOW);
+              nextButton = true;
+            }
+            else if (digitalRead(button1) == HIGH && !prestate1){
+              cntWrong ++;
+              prestate1 = true;
+            }
+            else if (digitalRead(button3) == HIGH && !prestate3){
+              cntWrong ++;
+              prestate3 = true;
+            }
+            else if (digitalRead(button4) == HIGH && !prestate4){
+              cntWrong++;
+              prestate4 = true;
+            }
+          }
           
-//          //functions that turn off the randomly turned on vibration motor
-//          if (digitalRead(vibration1) == HIGH && digitalRead(button1) == HIGH)
-//          { //display
-//            lcd.setCursor(0, 0);
-//            lcd.print("timer has been  ");
-//            lcd.setCursor(0, 1);
-//            lcd.print("started         ");
-//            //turns off vibration motor
-//            digitalWrite(zufall1, LOW);
-//            state = 1;
-//          }
-//
-//          else if (digitalRead(vibration2) == HIGH && digitalRead(button2) == HIGH)
-//          { //display
-//            lcd.setCursor(0, 0);
-//            lcd.print("timer has been  ");
-//            lcd.setCursor(0, 1);
-//            lcd.print("started         ");
-//            //turns off vibration motor
-//            digitalWrite(zufall1, LOW);
-//            state = 1;
-//          }
-//
-//          else if (digitalRead(vibration3) == HIGH && digitalRead(button3) == HIGH)
-//          {
-//            //display
-//            lcd.setCursor(0, 0);
-//            lcd.print("timer has been  ");
-//            lcd.setCursor(0, 1);
-//            lcd.print("started         ");
-//            //turns off vibration motor
-//            digitalWrite(zufall1, LOW);
-//            state = 1;
-//          }
-//
-//          else if (digitalRead(vibration4) == HIGH && digitalRead(button4) == HIGH)
-//          { //display
-//            lcd.setCursor(0, 0);
-//            lcd.print("timer has been  ");
-//            lcd.setCursor(0, 1);
-//            lcd.print("started         ");
-//            //turns off vibration motor
-//            digitalWrite(zufall1, LOW);
-//            state = 1;
-//          }
-
-          if(digitalRead(vibration1) == HIGH){
-            if (digitalRead(button1) == HIGH){
-              displayTimerStarted();
+          if (digitalRead(vibration3) == HIGH && !prestate3)
+          { //display
+            displayTimerStarted();
+            Serial.println(starttimer);
+            if (digitalRead(button3) == HIGH) { // && !prestate3
               //turns off vibration motor
               digitalWrite(zufall1, LOW);
-              state = 1;
-              }
-            else if (digitalRead(button2) == HIGH || digitalRead(button3) == HIGH || digitalRead(button4) == HIGH){
+              nextButton = true;
+            }
+            else if (digitalRead(button1) == HIGH && !prestate1){
+              cntWrong ++;
+              prestate1 = true;
+            }
+            else if (digitalRead(button2) == HIGH && !prestate2){
+              cntWrong ++;
+              prestate2 = true;
+            }
+            else if (digitalRead(button4) == HIGH && !prestate4){
               cntWrong++;
-              digitalWrite(zufall1, LOW);
-              state = 1;
+              prestate4 = true;
             }
           }
-          else if(digitalRead(vibration2) == HIGH){
-            if (digitalRead(button2) == HIGH){
-              displayTimerStarted();
+          
+          if (digitalRead(vibration4) == HIGH && !prestate4)
+          { //display
+            displayTimerStarted();
+            Serial.println(starttimer);
+            if (digitalRead(button4) == HIGH) {
               //turns off vibration motor
               digitalWrite(zufall1, LOW);
-              state = 1;
-              }
-            else if (digitalRead(button1) == HIGH || digitalRead(button3) == HIGH || digitalRead(button4) == HIGH){
-              cntWrong++;
-              digitalWrite(zufall1, LOW);
-              state = 1;
+              nextButton = true;
             }
-          }
-          else if(digitalRead(vibration3) == HIGH){
-            if (digitalRead(button3) == HIGH){
-              displayTimerStarted();
-              //turns off vibration motor
-              digitalWrite(zufall1, LOW);
-              state = 1;
-              }
-            else if (digitalRead(button1) == HIGH || digitalRead(button2) == HIGH || digitalRead(button4) == HIGH){
-              cntWrong++;
-              digitalWrite(zufall1, LOW);
-              state = 1;
+            else if (digitalRead(button1) == HIGH && !prestate1){
+              cntWrong ++;
+              prestate1 = true;
             }
-          }
-          else if(digitalRead(vibration4) == HIGH){
-            if (digitalRead(button4) == HIGH){
-              displayTimerStarted();
-              //turns off vibration motor
-              digitalWrite(zufall1, LOW);
-              state = 1;
-              }
-            else if (digitalRead(button1) == HIGH || digitalRead(button2) == HIGH || digitalRead(button3) == HIGH){
+            else if (digitalRead(button2) == HIGH && !prestate2){
+              cntWrong ++;
+              prestate2 = true;
+            }
+            else if (digitalRead(button3) == HIGH && !prestate3){
               cntWrong++;
-              digitalWrite(zufall1, LOW);
-              state = 1;
+              prestate3 = true;
             }
           }
 
-        
+          // only leave while loop if correct button is released to avoid wrong counting
+          if ((digitalRead(button1) == LOW && digitalRead(button2) == LOW && digitalRead(button3) == LOW && digitalRead(button4) == LOW) && nextButton){
+            state = 1;
+          }
+          
+          if ((digitalRead(button1) || digitalRead(button2) || digitalRead(button3) || digitalRead(button4)) == LOW){
+            prestate1 = false;
+            prestate2 = false;
+            prestate3 = false;
+            prestate4 = false;
+          }
+        }        
+
+
         //stop timer
         if (i == 9 && state == 1)
         { lcd.setCursor(0, 1);
           lcd.print("                ");                      //clear second line of display
           stoptimer = millis();
+          Serial.println("STOP");
+          Serial.println(stoptimer);
           stopwatch = stoptimer - starttimer;
           s = stopwatch / 1000;                               //calculation to get the needed time in seconds
           nachkommastelle = (stopwatch - (s * 1000)) / 100;   //calculation to get the decimale place of the number
@@ -484,28 +512,27 @@ start:
           while ((digitalRead(button_res) || digitalRead(button_mode1) || digitalRead(button_select)) == LOW)
           { //display
             lcd.setCursor(0, 0);
-            lcd.print(s);
-            lcd.setCursor(4, 0);
-            lcd.print("  seconds");
-            lcd.setCursor(0, 1);
             lcd.print(cntWrong);
-            lcd.setCursor(2, 1);
-            String outputString = "  wrong pushed button";
-            lcd.print(outputString + (cntWrong == 1 ? "" : "s"));
+            lcd.setCursor(1, 0);
+            lcd.print("  wrong button" + ((cntWrong != 1) ? buttons : ""));
+            lcd.setCursor(0, 1);
+            lcd.print(s);
+            lcd.setCursor(4, 1);
+            lcd.print("  seconds");
 
             //condition to display the decimale place of the number
             if (s >= 10 )
             {
-              lcd.setCursor(2, 0);
+              lcd.setCursor(2, 1);
               lcd.print(",");
               lcd.setCursor(3, 1);
               lcd.print(nachkommastelle);
             }
             else
             {
-              lcd.setCursor(1, 0);
+              lcd.setCursor(1, 1);
               lcd.print(",");
-              lcd.setCursor(2, 0);
+              lcd.setCursor(2, 1);
               lcd.print(nachkommastelle);
             }
             
@@ -663,12 +690,12 @@ void action4()
 }
 
 void displayTimerStarted() {
-  // display
   lcd.setCursor(0, 0);
   lcd.print("timer has been  ");
   lcd.setCursor(0, 1);
   lcd.print("started         ");
 }
+
 
 void calculation()
 {
