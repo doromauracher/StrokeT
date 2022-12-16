@@ -4,7 +4,7 @@
 sd module to save data on a formatted sd card. Save data as a .txt file <br>
 saves data for every mode in a seperated file
 * mode1 : count of every finger
-* mode2 : overall time of the reaction game (/)
+* mode2 : overall time of the reaction game
 * mode3 : max. strength of each finger // TO DO: implement calculation of force max
 
 ## servoPoti
