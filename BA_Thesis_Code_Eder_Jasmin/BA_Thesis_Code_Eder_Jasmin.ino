@@ -321,7 +321,7 @@ void action1()
 
 void action2()
 { //variables for the timer
-  unsigned long starttimer, stoptimer, stopwatch, s, nachkommastelle;
+  unsigned long starttimer, stoptimer, stopwatch, buttonTimer, buttonStartTimer, buttonEndTimer, s, nachkommastelle;
 
   //displays start condition
   lcd.setCursor(0, 0);
@@ -337,15 +337,19 @@ start:
     int vibration = 0;
     int state = 0;
 
-    boolean nextButton;
-    boolean prestate1 = false;                          //variables to count button pushing and save state of button
+    boolean correctButton;
+    boolean prestate1 = false;                          //variables to count button pushing and save the state of a button
     boolean prestate2 = false;
     boolean prestate3 = false;
     boolean prestate4 = false;
 
-    String buttons = "s";                               //to print button S on lcd display
+    String buttons = "s";                               //to print buttonS on lcd display if number of wrong buttons is not 1
 
     int cntWrong = 0;                                   //counter for wrong pushed buttons
+    
+    buttonTimer = 0;                                    //initialize timer variables for pushing the button
+    buttonStartTimer = 0;
+    buttonEndTimer = 0;  
 
     delay(200); //that vibration does not start early
 
@@ -373,14 +377,13 @@ start:
           digitalWrite(zufall1, HIGH);
         }
 
-        state = 0;                                  //variables to left while loop
-        nextButton = false;
+        state = 0;                                      //variables to left while loop
+        correctButton = false;
         
         prestate1 = false;                      
         prestate2 = false;
         prestate3 = false;
-        prestate4 = false;
-        
+        prestate4 = false;     
         
         while (state == 0)
         { //condition to left while-loop when mode or select button is pressed
@@ -394,11 +397,10 @@ start:
           if (digitalRead(vibration1) == HIGH)
           { //display
             displayTimerStarted();
-            Serial.println(starttimer);
             if (digitalRead(button1) == HIGH) {
-              //turns off vibration motor
-              digitalWrite(zufall1, LOW);
-              nextButton = true;
+              buttonStartTimer = millis();  //start timer for pushing state of button
+              digitalWrite(zufall1, LOW);   //turns off vibration motor
+              correctButton = true;         //sets variable to remeber the right button had been pushed
             }
             // checks if another button is pushed and increments cntWrong 
             else if (digitalRead(button2) == HIGH && !prestate2){
@@ -409,7 +411,7 @@ start:
               cntWrong ++;
               prestate3 = true;
             }
-            else if (digitalRead(button4) == HIGH && !prestate4 && vibration != 4){
+            else if (digitalRead(button4) == HIGH && !prestate4){
               cntWrong ++;
               prestate4 = true;
             }
@@ -418,11 +420,10 @@ start:
           if (digitalRead(vibration2) == HIGH)
           { //display
             displayTimerStarted();
-            Serial.println(starttimer);
             if (digitalRead(button2) == HIGH) {
-              //turns off vibration motor
-              digitalWrite(zufall1, LOW);
-              nextButton = true;
+              buttonStartTimer = millis();  //start timer for pushing state of button
+              digitalWrite(zufall1, LOW);   //turns off vibration motor
+              correctButton = true;         //sets variable to remeber the right button had been pushed
             }
             else if (digitalRead(button1) == HIGH && !prestate1){
               cntWrong ++;
@@ -441,11 +442,10 @@ start:
           if (digitalRead(vibration3) == HIGH && !prestate3)
           { //display
             displayTimerStarted();
-            Serial.println(starttimer);
             if (digitalRead(button3) == HIGH) { // && !prestate3
-              //turns off vibration motor
-              digitalWrite(zufall1, LOW);
-              nextButton = true;
+              buttonStartTimer = millis();  //start timer for pushing state of button
+              digitalWrite(zufall1, LOW);   //turns off vibration motor
+              correctButton = true;         //sets variable to remeber the right button had been pushed
             }
             else if (digitalRead(button1) == HIGH && !prestate1){
               cntWrong ++;
@@ -464,11 +464,10 @@ start:
           if (digitalRead(vibration4) == HIGH && !prestate4)
           { //display
             displayTimerStarted();
-            Serial.println(starttimer);
             if (digitalRead(button4) == HIGH) {
-              //turns off vibration motor
-              digitalWrite(zufall1, LOW);
-              nextButton = true;
+              buttonStartTimer = millis();  //start timer for pushing state of button
+              digitalWrite(zufall1, LOW);   //turns off vibration motor
+              correctButton = true;         //sets variable to remeber the right button had been pushed
             }
             else if (digitalRead(button1) == HIGH && !prestate1){
               cntWrong ++;
@@ -484,8 +483,20 @@ start:
             }
           }
 
-          // only leave while loop if correct button is released to avoid wrong counting
-          if ((digitalRead(button1) == LOW && digitalRead(button2) == LOW && digitalRead(button3) == LOW && digitalRead(button4) == LOW) && nextButton){
+          // only leave while loop if correct button has been pushed and is released again to avoid wrong counting in next iteration
+          if ((digitalRead(button1) == LOW && digitalRead(button2) == LOW && digitalRead(button3) == LOW && digitalRead(button4) == LOW) && correctButton){
+            // end button timer and sum it up
+            buttonEndTimer = millis();
+            buttonTimer += (buttonEndTimer - buttonStartTimer);
+            
+            // just for simulation - delete
+            Serial.print("buttonStartTimer: ");
+            Serial.println(buttonStartTimer);
+            Serial.print("buttonEndTimer: ");
+            Serial.println(buttonEndTimer);
+            Serial.print("buttonTimer: ");
+            Serial.println(buttonTimer);
+            
             state = 1;
           }
           
@@ -503,9 +514,7 @@ start:
         { lcd.setCursor(0, 1);
           lcd.print("                ");                      //clear second line of display
           stoptimer = millis();
-          Serial.println("STOP");
-          Serial.println(stoptimer);
-          stopwatch = stoptimer - starttimer;
+          stopwatch = stoptimer - starttimer - buttonTimer;
           s = stopwatch / 1000;                               //calculation to get the needed time in seconds
           nachkommastelle = (stopwatch - (s * 1000)) / 100;   //calculation to get the decimale place of the number
           //conditon to display needed time until reset-, mode- or select-button is pressed
