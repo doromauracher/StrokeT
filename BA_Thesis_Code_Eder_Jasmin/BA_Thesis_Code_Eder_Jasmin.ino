@@ -79,7 +79,8 @@ int force;                                  //variable for the force
 int force1;       
 int force2;  
 int force3;       
-int force4;            
+int force4; 
+int maxForce;           
 
 //run once
 void setup()
@@ -569,44 +570,64 @@ void action3()
   { 
     if (digitalRead(button1) == HIGH)                 //checks if button 1 is pressed (yes -> high, no -> low)
     {
+      if (force > maxForce){
+        maxForce = force;
+      }
       lcd.setCursor(0, 0);
-      lcd.print("Finger 1:       ");
+      lcd.print("Finger 1 max:    ");
+      lcd.setCursor(14,0);
+      lcd.print(maxForce);
       lcd.setCursor(0, 1);
-      lcd.print("Force (N):      ");
-      lcd.setCursor(13, 1);
+      lcd.print("Force (N):       ");
+      lcd.setCursor(14, 1);
       lcd.print(force);
       delay(200);
     }
 
     if (digitalRead(button2) == HIGH)                 //checks if button 2 is pressed (yes -> high, no -> low)
     {
+      if (force > maxForce){
+        maxForce = force;
+      }
       lcd.setCursor(0, 0);
-      lcd.print("Finger 2:       ");
+      lcd.print("Finger 2 max:    ");
+      lcd.setCursor(14,0);
+      lcd.print(maxForce);
       lcd.setCursor(0, 1);
       lcd.print("Force (N):       ");
-      lcd.setCursor(13, 1);
+      lcd.setCursor(14, 1);
       lcd.print(force);
       delay(200);
     }
 
     if (digitalRead(button3) == HIGH)                 //checks if button 3 is pressed (yes -> high, no -> low)
     {
+      if (force > maxForce){
+        maxForce = force;
+      }
       lcd.setCursor(0, 0);
-      lcd.print("Finger 3:       ");
+      lcd.print("Finger 3 max:    ");
+      lcd.setCursor(14,0);
+      lcd.print(maxForce);
       lcd.setCursor(0, 1);
       lcd.print("Force (N):       ");
-      lcd.setCursor(13, 1);
+      lcd.setCursor(14, 1);
       lcd.print(force);
       delay(200);
     }
 
     if (digitalRead(button4) == HIGH)                 //checks if button 4 is pressed (yes -> high, no -> low)
     {
+      if (force > maxForce){
+        maxForce = force;
+      }
       lcd.setCursor(0, 0);
-      lcd.print("Finger 4:       ");
+      lcd.print("Finger 4 max:    ");
+      lcd.setCursor(14,0);
+      lcd.print(maxForce);
       lcd.setCursor(0, 1);
       lcd.print("Force (N):       ");
-      lcd.setCursor(13, 1);
+      lcd.setCursor(14, 1);
       lcd.print(force);
       delay(200);
     }
@@ -617,6 +638,7 @@ void action3()
     lcd.print("No force        ");
     lcd.setCursor(0, 1);
     lcd.print("recognized      ");
+    maxForce = 0;
   }
   digitalRead(button_mode1);
 }
