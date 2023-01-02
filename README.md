@@ -13,10 +13,10 @@ analog read of poti and write it to servo motor
 
 ## Code Changes
 * mode 2:
- * counting of wrong pushed buttons implemented
- * timer adapted to not count when pushing the right button
+  * counting of wrong pushed buttons implemented
+  * timer adapted to not count when pushing the right button
 * mode 3:
- * added calculation of maximal force
+  * added calculation of maximal force
 
 # TO DOs
 * timestamp - for each file of saved data
