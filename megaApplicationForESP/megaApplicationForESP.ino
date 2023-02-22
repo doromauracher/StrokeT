@@ -14,15 +14,17 @@ void setup(){
 
 void loop(){
   
- doc["Finger"] = 4 ;               // finger id from 1 to 8
- doc["count"] = 5;                 // measured value of the finger
-  
-  serializeJson(doc, message);     // serialize and store the object in a String e.g. {"Finger": 1, "count": 1}
+  sendMessage(1, 1);    
+  sendMessage(5, 2); 
 
-  Serial.println(message);
-  s.println(message);
   delay(1000);
-  message ="";
+}
 
- 
+// send a message to the ESP in the format {"Finger": 1, "count": 1}
+void sendMessage(int finger, int count) {
+  doc["Finger"] = finger;              // finger id from 1 to 8
+  doc["count"] = count;                 // measured value of the finger
+  serializeJson(doc, message);          // convert to Json format
+  s.println(message);                   // send to ESP
+  message ="";                          // reset message to avoid concatenating
 }
