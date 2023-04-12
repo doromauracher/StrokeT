@@ -4,8 +4,14 @@ a therapy device used for mirror-therapy and rehabilitation of affected fingers
 ## Code Structure
 **main-file**: global variables are defined, the basic code structure runs in a loop <br>
 **descriptions.h**: header file for global variables and definitions <br>
-**mode1-4.cpp**: implementations of the different training modes - functions used in main file <br>
-**mode1-4.h**: header file for the different training modes - needs to be included in the main file (to define the functions in the right order)
+**mode1-5.cpp**: implementations of the different training modes - functions used in main file <br>
+**mode1-5.h**: header file for the different training modes - needs to be included in the main file (to define the functions in the right order)
+
+* Mode 1: Count pushes
+* Mode 2: Reaction game
+* Mode 3: Force measurement
+* Mode 4: Mirror Therapy
+* Mode 5: Simons Says memory game
 
 ## sdStrokeT
 sd module to save data on a formatted sd card. Save data as a .txt file <br>
